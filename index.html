@@ -1,230 +1,289 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Advik's Birthday Hunt</title>
-  <style>
-    body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: #fff8e1;
-      margin: 0;
-      padding: 2rem;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      text-align: center;
-    }
-    #main, #riddle, #clues, #final-container {
-      display: none;
-      width: 100%;
-      max-width: 600px;
-    }
-    .puzzle {
-      margin: 1rem 0;
-      border: 2px solid #ffc107;
-      padding: 1rem;
-      border-radius: 10px;
-      background: #fffde7;
-      box-shadow: 0 0 8px #ffd54faa;
-    }
-    button {
-      padding: 10px 20px;
-      font-size: 16px;
-      background-color: #ffd54f;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      margin-top: 10px;
-      transition: background-color 0.3s ease;
-    }
-    button:hover {
-      background-color: #ffca28;
-    }
-    input {
-      padding: 10px;
-      font-size: 16px;
-      margin-top: 10px;
-      border-radius: 5px;
-      border: 1px solid #ccc;
-      width: 80%;
-      max-width: 300px;
-    }
-    p {
-      font-size: 18px;
-      margin: 0.5rem 0;
-    }
-    #final-container h2 {
-      margin-top: 2rem;
-      font-size: 24px;
-      color: #5d4037;
-    }
-  </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Advik's Birthday Hunt</title>
+<style>
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #fff8e1, #ffd54f);
+    margin: 0; padding: 2rem;
+    display: flex; flex-direction: column; align-items: center;
+    text-align: center;
+    color: #5d4037;
+    min-height: 100vh;
+  }
+  h1, h2 {
+    margin-bottom: 1rem;
+  }
+  button {
+    background-color: #ffca28;
+    border: none;
+    border-radius: 10px;
+    padding: 12px 25px;
+    font-size: 18px;
+    cursor: pointer;
+    box-shadow: 0 4px 10px #ffb300aa;
+    transition: background-color 0.3s ease;
+    margin-top: 1rem;
+  }
+  button:hover {
+    background-color: #ffc107;
+  }
+  input {
+    font-size: 16px;
+    padding: 10px;
+    margin-top: 10px;
+    border-radius: 8px;
+    border: 2px solid #ffca28;
+    width: 80%;
+    max-width: 300px;
+    text-align: center;
+  }
+  .hidden {display:none;}
+  .puzzle-box {
+    background: #fffde7;
+    border: 2px solid #ffd54f;
+    border-radius: 15px;
+    padding: 15px 20px;
+    margin: 20px 0;
+    box-shadow: 0 0 12px #ffecb3cc;
+  }
+  .clue-text {
+    font-weight: 700;
+    font-size: 1.2rem;
+    margin-top: 12px;
+    color: #bf360c;
+  }
+  #final-clue {
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: #4e342e;
+    margin-top: 2rem;
+  }
+  #video-container {
+    margin-top: 2rem;
+  }
+</style>
 </head>
 <body>
-  <div id="main" style="display:block;">
-    <h1>🎉 Congrats on finding the hint!</h1>
-    <button onclick="startRiddle()">Press to continue</button>
-  </div>
 
-  <div id="riddle">
-    <h2>I speak without a mouth and hear without ears.<br>I have nobody, but I come alive with wind.<br>What am I?</h2>
-    <input id="riddleAnswer" placeholder="Your answer..." />
+<!-- START SCREEN -->
+<div id="start-screen">
+  <h1>🎉 Congrats on finding the hint!</h1>
+  <button id="start-btn">Press to continue</button>
+</div>
+
+<!-- RIDDLE SCREEN -->
+<div id="riddle-screen" class="hidden">
+  <h2>I speak without a mouth and hear without ears.<br />I have nobody, but I come alive with wind.<br />What am I?</h2>
+  <input type="text" id="riddle-input" placeholder="Your answer here" autocomplete="off" />
+  <br />
+  <button id="riddle-submit">Submit</button>
+  <p id="riddle-msg" style="color:red; font-weight:bold; margin-top:10px;"></p>
+</div>
+
+<!-- PUZZLES AND CLUES -->
+<div id="puzzle-screen" class="hidden">
+  <!-- Puzzle 1 -->
+  <div class="puzzle-box" id="puzzle1-box">
+    <p>🔢 Arrange these numbers in descending order by typing them separated by commas:</p>
+    <p><strong>5, 1, 3</strong></p>
+    <input type="text" id="puzzle1-input" placeholder="Example: 5,3,1" autocomplete="off" />
     <br />
-    <button onclick="checkRiddle()">Submit</button>
-    <p id="riddleMsg" style="color:red;"></p>
+    <button class="puzzle-submit" data-puzzle="1">Submit</button>
+    <p class="clue-text" id="clue1" style="display:none;">🧁 It’s sweet</p>
   </div>
 
-  <div id="clues">
-    <div class="puzzle" id="puzzle1" style="display:none;">
-      <p>🔢 Arrange in descending order: 5, 1, 3</p>
-      <input id="ans1" placeholder="Answer (like 5,3,1)" />
-      <br />
-      <button onclick="solvePuzzle(1)">Submit</button>
-      <p id="clue1" style="font-weight:bold; margin-top:10px;"></p>
-    </div>
-
-    <div class="puzzle" id="puzzle2" style="display:none;">
-      <p>🧩 What comes next: 2, 4, 6, ?</p>
-      <input id="ans2" placeholder="Answer" />
-      <br />
-      <button onclick="solvePuzzle(2)">Submit</button>
-      <p id="clue2" style="font-weight:bold; margin-top:10px;"></p>
-    </div>
-
-    <div class="puzzle" id="puzzle3" style="display:none;">
-      <p>🧠 Which doesn’t belong? Apple, Banana, Car, Grape</p>
-      <input id="ans3" placeholder="Answer" />
-      <br />
-      <button onclick="solvePuzzle(3)">Submit</button>
-      <p id="clue3" style="font-weight:bold; margin-top:10px;"></p>
-    </div>
-
-    <div class="puzzle" id="puzzle4" style="display:none;">
-      <p>🔁 Unscramble this: "ananab + daerb"</p>
-      <input id="ans4" placeholder="Answer" />
-      <br />
-      <button onclick="solvePuzzle(4)">Submit</button>
-      <p id="clue4" style="font-weight:bold; margin-top:10px;"></p>
-    </div>
-
-    <input id="finalInput" placeholder="Enter password..." style="margin-top:20px; font-weight:bold;" />
+  <!-- Puzzle 2 -->
+  <div class="puzzle-box hidden" id="puzzle2-box">
+    <p>🧩 What comes next in the sequence?</p>
+    <p><strong>2, 4, 6, ?</strong></p>
+    <input type="text" id="puzzle2-input" placeholder="Your answer" autocomplete="off" />
     <br />
-    <button onclick="checkPassword()">Submit</button>
-    <p id="passMsg" style="color:red; font-weight:bold;"></p>
+    <button class="puzzle-submit" data-puzzle="2">Submit</button>
+    <p class="clue-text" id="clue2" style="display:none;">🍓 Made with fruit</p>
   </div>
 
-  <div id="final-container"></div>
+  <!-- Puzzle 3 -->
+  <div class="puzzle-box hidden" id="puzzle3-box">
+    <p>🧠 Which doesn’t belong?</p>
+    <p><strong>Apple, Banana, Car, Grape</strong></p>
+    <input type="text" id="puzzle3-input" placeholder="Your answer" autocomplete="off" />
+    <br />
+    <button class="puzzle-submit" data-puzzle="3">Submit</button>
+    <p class="clue-text" id="clue3" style="display:none;">😋 You’ve tried it</p>
+  </div>
 
-  <script>
-    // Start screen
-    function startRiddle() {
-      document.getElementById('main').style.display = 'none';
-      document.getElementById('riddle').style.display = 'block';
-      document.getElementById('riddleMsg').textContent = '';
-      document.getElementById('riddleAnswer').value = '';
+  <!-- Puzzle 4 -->
+  <div class="puzzle-box hidden" id="puzzle4-box">
+    <p>🔁 Unscramble this word (no spaces):</p>
+    <p><strong>ananab + daerb</strong></p>
+    <input type="text" id="puzzle4-input" placeholder="Your answer" autocomplete="off" />
+    <br />
+    <button class="puzzle-submit" data-puzzle="4">Submit</button>
+    <p class="clue-text" id="clue4" style="display:none;">🍌🍞</p>
+  </div>
+
+  <!-- PASSWORD -->
+  <div class="puzzle-box hidden" id="password-box" style="margin-top: 40px;">
+    <p>Enter the password based on the clues:</p>
+    <input type="text" id="password-input" placeholder="Password here" autocomplete="off" />
+    <br />
+    <button id="password-submit">Submit</button>
+    <p id="password-msg" style="color:red; font-weight:bold; margin-top: 10px;"></p>
+  </div>
+</div>
+
+<!-- VIDEO + FINAL CLUE -->
+<div id="final-screen" class="hidden">
+  <div id="video-container"></div>
+  <p id="final-clue" class="hidden">🗺 Final Clue: Go to your sister</p>
+</div>
+
+<script>
+  // Helper: show & hide
+  function show(el) { el.classList.remove('hidden'); el.style.display = 'block'; }
+  function hide(el) { el.classList.add('hidden'); el.style.display = 'none'; }
+
+  // Start screen -> riddle screen
+  const startBtn = document.getElementById('start-btn');
+  const startScreen = document.getElementById('start-screen');
+  const riddleScreen = document.getElementById('riddle-screen');
+  const puzzleScreen = document.getElementById('puzzle-screen');
+  const finalScreen = document.getElementById('final-screen');
+
+  startBtn.onclick = () => {
+    hide(startScreen);
+    show(riddleScreen);
+  };
+
+  // Riddle checking (answer = echo)
+  const riddleSubmit = document.getElementById('riddle-submit');
+  const riddleInput = document.getElementById('riddle-input');
+  const riddleMsg = document.getElementById('riddle-msg');
+
+  riddleSubmit.onclick = () => {
+    let ans = riddleInput.value.toLowerCase().replace(/\s+/g, '');
+    if (ans === 'echo') {
+      riddleMsg.textContent = '';
+      hide(riddleScreen);
+      show(puzzleScreen);
+      showPuzzle(1);
+    } else {
+      riddleMsg.textContent = '❌ Try again!';
     }
+  };
 
-    function checkRiddle() {
-      const ans = document.getElementById('riddleAnswer').value.toLowerCase().trim();
-      if (ans === 'echo') {
-        document.getElementById('riddle').style.display = 'none';
-        document.getElementById('clues').style.display = 'block';
-        // Show first puzzle only
-        showPuzzle(1);
-      } else {
-        document.getElementById('riddleMsg').textContent = '❌ Try again!';
-      }
+  // Puzzle & clue logic
+  function showPuzzle(num) {
+    for (let i=1; i<=4; i++) {
+      const box = document.getElementById(`puzzle${i}-box`);
+      if (i === num) show(box);
+      else hide(box);
     }
+    // Hide password box until all puzzles solved
+    hide(document.getElementById('password-box'));
+  }
 
-    function showPuzzle(num) {
-      for(let i=1; i<=4; i++) {
-        document.getElementById('puzzle' + i).style.display = (i === num) ? 'block' : 'none';
-      }
-    }
-
-    function solvePuzzle(num) {
-      if (num === 1) {
-        const a = document.getElementById('ans1').value.trim().replace(/\s+/g, '');
-        if (a === '5,3,1' || a === '531') {
-          document.getElementById('clue1').textContent = '🧁 It’s sweet';
-          showPuzzle(2);
+  // Puzzle submit buttons
+  document.querySelectorAll('.puzzle-submit').forEach(btn => {
+    btn.onclick = () => {
+      const puzzleNum = Number(btn.dataset.puzzle);
+      if (validatePuzzle(puzzleNum)) {
+        revealClue(puzzleNum);
+        if (puzzleNum < 4) {
+          showPuzzle(puzzleNum + 1);
         } else {
-          alert('Nope, try again!');
+          // Last puzzle done, show password input
+          hidePuzzleBoxes();
+          show(document.getElementById('password-box'));
         }
       }
-      if (num === 2) {
-        const a = document.getElementById('ans2').value.trim();
-        if (a === '8') {
-          document.getElementById('clue2').textContent = '🍓 Made with fruit';
-          showPuzzle(3);
-        } else {
-          alert('Nope, try again!');
-        }
-      }
-      if (num === 3) {
-        const a = document.getElementById('ans3').value.toLowerCase().trim();
-        if (a === 'car') {
-          document.getElementById('clue3').textContent = '😋 You’ve tried it';
-          showPuzzle(4);
-        } else {
-          alert('Nope, try again!');
-        }
-      }
-      if (num === 4) {
-        const a = document.getElementById('ans4').value.toLowerCase().replace(/\s+/g, '');
-        if (a === 'bananabread') {
-          document.getElementById('clue4').textContent = '🍌🍞';
-        } else {
-          alert('Nope, try again!');
-        }
-      }
+    };
+  });
+
+  function hidePuzzleBoxes() {
+    for (let i=1; i<=4; i++) {
+      hide(document.getElementById(`puzzle${i}-box`));
     }
+  }
 
-    function checkPassword() {
-      const pass = document.getElementById('finalInput').value.toLowerCase().replace(/\s+/g, '');
-      if (pass === 'bananabread') {
-        document.getElementById('clues').style.display = 'none';
-        playVideoAndShowFinalClue();
-      } else {
-        document.getElementById('passMsg').textContent = '❌ Nope! Try again';
-      }
+  function revealClue(num) {
+    const clue = document.getElementById(`clue${num}`);
+    clue.style.display = 'block';
+  }
+
+  // Puzzle validation logic
+  function validatePuzzle(num) {
+    let val = '';
+    switch(num) {
+      case 1:
+        val = document.getElementById('puzzle1-input').value.replace(/\s+/g, '');
+        return val === '5,3,1';
+      case 2:
+        val = document.getElementById('puzzle2-input').value.trim();
+        return val === '8' || val === '8.'; // next even number in sequence 2,4,6,8
+      case 3:
+        val = document.getElementById('puzzle3-input').value.toLowerCase().trim();
+        // 'car' is the odd one out
+        return val === 'car';
+      case 4:
+        val = document.getElementById('puzzle4-input').value.toLowerCase().replace(/\s+/g, '');
+        // unscramble "ananabdaerb" = "bananabread"
+        return val === 'bananabread';
+      default:
+        return false;
     }
+  }
 
-    function playVideoAndShowFinalClue() {
-      const finalContainer = document.getElementById('final-container');
-      finalContainer.innerHTML = '<div id="player"></div>';
+  // Password submit
+  const passwordSubmit = document.getElementById('password-submit');
+  const passwordInput = document.getElementById('password-input');
+  const passwordMsg = document.getElementById('password-msg');
 
-      if (!window.YT) {
-        let tag = document.createElement('script');
-        tag.src = "https://www.youtube.com/iframe_api";
-        let firstScriptTag = document.getElementsByTagName('script')[0];
-        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-      }
-
-      window.onYouTubeIframeAPIReady = () => {
-        let player = new YT.Player('player', {
-          videoId: 'V8cP89V5UoM',
-          playerVars: { autoplay: 1, controls: 1, modestbranding: 1, rel: 0, fs: 1 },
-          events: {
-            'onReady': event => {
-              event.target.playVideo();
-              let iframe = event.target.getIframe();
-              if (iframe.requestFullscreen) iframe.requestFullscreen();
-              else if (iframe.webkitRequestFullscreen) iframe.webkitRequestFullscreen();
-              else if (iframe.mozRequestFullScreen) iframe.mozRequestFullScreen();
-
-              // Stop video after 18 seconds
-              setTimeout(() => {
-                player.pauseVideo();
-                document.exitFullscreen?.();
-                finalContainer.innerHTML = '<h2>🗺 Final Clue: Go to your sister</h2>';
-              }, 18000);
-            }
-          }
-        });
-      };
+  passwordSubmit.onclick = () => {
+    let pw = passwordInput.value.toLowerCase().replace(/\s+/g, '');
+    if (pw === 'bananabread') {
+      passwordMsg.textContent = '';
+      hide(puzzleScreen);
+      show(finalScreen);
+      playVideo();
+    } else {
+      passwordMsg.textContent = '❌ Wrong password!';
     }
-  </script>
+  };
+
+  // Video embed & control
+  const videoContainer = document.getElementById('video-container');
+  const finalClue = document.getElementById('final-clue');
+
+  // Replace this with your YouTube video ID (from your URL)
+  const ytVideoID = 'V8cP89V5UoM';
+
+  let player;
+  function playVideo() {
+    // Embed YouTube iframe
+    videoContainer.innerHTML = `
+      <iframe id="ytplayer" type="text/html" width="100%" height="360"
+        src="https://www.youtube.com/embed/${ytVideoID}?autoplay=1&controls=0&rel=0&modestbranding=1&playsinline=1&fs=1"
+        frameborder="0" allowfullscreen allow="autoplay">
+      </iframe>
+    `;
+    finalClue.classList.add('hidden');
+
+    // Stop video and show final clue after 18 sec
+    setTimeout(() => {
+      stopVideo();
+      finalClue.classList.remove('hidden');
+    }, 18000);
+  }
+
+  function stopVideo() {
+    // Remove iframe to stop playback
+    videoContainer.innerHTML = '';
+  }
+</script>
 </body>
 </html>
