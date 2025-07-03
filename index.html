@@ -1,292 +1,170 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Birthday Surprise Puzzle</title>
-<style>
-  body { font-family: Arial, sans-serif; background: #f9f9f9; padding: 20px; }
-  .hidden { display: none; }
-  button { padding: 10px 20px; margin-top: 10px; cursor: pointer; }
-  input[type=text] { padding: 8px; width: 200px; margin-top: 5px; }
-  .clue-box { border: 2px solid #ccc; padding: 15px; margin-top: 15px; border-radius: 8px; background: #fff; }
-  .locked { opacity: 0.5; }
-  .unlocked { opacity: 1; }
-  #videoContainer iframe { width: 100vw; height: 100vh; border: none; }
-  #finalMessage { font-size: 1.5em; color: #333; margin-top: 30px; }
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Advik's Birthday Hunt</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #fff8e1;
+      margin: 0;
+      padding: 2rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+    #main, #riddle, #clues, #final-container {
+      display: none;
+    }
+    .puzzle {
+      margin: 1rem;
+      border: 2px solid #ffc107;
+      padding: 1rem;
+      border-radius: 10px;
+      background: #fffde7;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      background-color: #ffd54f;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    input {
+      padding: 10px;
+      font-size: 16px;
+      margin-top: 10px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+  </style>
 </head>
 <body>
-
-<!-- Step 1: Congrats + Continue -->
-<div id="step1">
-  <h2>Congrats on finding the hint!</h2>
-  <button id="startBtn">Press to continue</button>
-</div>
-
-<!-- Step 2: Riddle 1 -->
-<div id="step2" class="hidden">
-  <h3>Riddle 1:</h3>
-  <p>I speak without a mouth and hear without ears.<br />
-     I have nobody, but I come alive with wind.<br />
-     What am I?</p>
-  <input type="text" id="riddle1Input" autocomplete="off" />
-  <button id="riddle1Btn">Submit</button>
-  <p id="riddle1Msg" style="color:red;"></p>
-</div>
-
-<!-- Step 3: Clues & Password -->
-<div id="step3" class="hidden">
-
-  <h3>Unlock the clues to find the password!</h3>
-
-  <!-- Clue 1 -->
-  <div id="clue1" class="clue-box unlocked">
-    <strong>Clue 1 Puzzle:</strong> What is 5 + 3?<br />
-    <input type="text" id="puzzle1Input" autocomplete="off" />
-    <button id="puzzle1Btn">Check</button>
-    <p id="puzzle1Msg" style="color:red;"></p>
-    <div id="clue1Text" class="hidden" style="margin-top:10px;">Clue 1: It's sweet</div>
+  <div id="main">
+    <h1>🎉 Congrats on finding the hint!</h1>
+    <button onclick="startRiddle()">Press to continue</button>
   </div>
 
-  <!-- Clue 2 -->
-  <div id="clue2" class="clue-box locked">
-    <strong>Clue 2 Puzzle:</strong> Arrange these numbers in descending order, separated by commas:<br />
-    <p><i>1, 2, 3</i></p>
-    <input type="text" id="puzzle2Input" autocomplete="off" disabled />
-    <button id="puzzle2Btn" disabled>Check</button>
-    <p id="puzzle2Msg" style="color:red;"></p>
-    <div id="clue2Text" class="hidden" style="margin-top:10px;">Clue 2: Made with fruit</div>
+  <div id="riddle">
+    <h2>I speak without a mouth and hear without ears.<br>I have nobody, but I come alive with wind.<br>What am I?</h2>
+    <input id="riddleAnswer" placeholder="Your answer..." />
+    <button onclick="checkRiddle()">Submit</button>
+    <p id="riddleMsg"></p>
   </div>
 
-  <!-- Clue 3 -->
-  <div id="clue3" class="clue-box locked">
-    <strong>Clue 3 Puzzle:</strong> What is the next number in this sequence?<br />
-    <p><i>2, 4, 6, ?</i></p>
-    <input type="text" id="puzzle3Input" autocomplete="off" disabled />
-    <button id="puzzle3Btn" disabled>Check</button>
-    <p id="puzzle3Msg" style="color:red;"></p>
-    <div id="clue3Text" class="hidden" style="margin-top:10px;">Clue 3: You've tried it</div>
-  </div>
-
-  <!-- Clue 4 -->
-  <div id="clue4" class="clue-box locked">
-    <strong>Clue 4 Puzzle:</strong> Type the word "banana" backwards:<br />
-    <input type="text" id="puzzle4Input" autocomplete="off" disabled />
-    <button id="puzzle4Btn" disabled>Check</button>
-    <p id="puzzle4Msg" style="color:red;"></p>
-    <div id="clue4Text" class="hidden" style="margin-top:10px; font-size:32px;">
-      Clue 4: 🍌🍞
+  <div id="clues">
+    <div class="puzzle" id="puzzle1">
+      <p>🔢 Tap to sort: 5, 1, 3 (descending)</p>
+      <button onclick="solvePuzzle(1)">1st Puzzle Done</button>
     </div>
+    <p id="clue1"></p>
+
+    <div class="puzzle" id="puzzle2" style="display:none">
+      <p>🧩 What comes next: 2, 4, 6, ?</p>
+      <button onclick="solvePuzzle(2)">2nd Puzzle Done</button>
+    </div>
+    <p id="clue2"></p>
+
+    <div class="puzzle" id="puzzle3" style="display:none">
+      <p>🧠 Which doesn’t belong? Apple, Banana, Car, Grape</p>
+      <button onclick="solvePuzzle(3)">3rd Puzzle Done</button>
+    </div>
+    <p id="clue3"></p>
+
+    <div class="puzzle" id="puzzle4" style="display:none">
+      <p>🔁 Unscramble this: "ananab + daerb"</p>
+      <button onclick="solvePuzzle(4)">4th Puzzle Done</button>
+    </div>
+    <p id="clue4"></p>
+
+    <input id="finalInput" placeholder="Enter password..." />
+    <button onclick="checkPassword()">Submit</button>
+    <p id="passMsg"></p>
   </div>
 
-  <!-- Password input -->
-  <div id="passwordBox" style="margin-top:20px; display:none;">
-    <label for="passwordInput"><strong>Enter password:</strong></label><br />
-    <input type="text" id="passwordInput" autocomplete="off" />
-    <button id="passwordBtn">Submit</button>
-    <p id="passwordMsg"></p>
-  </div>
+  <div id="final-container"></div>
 
-</div>
+  <script>
+    document.getElementById('main').style.display = 'block';
 
-<!-- Video Container -->
-<div id="videoContainer" class="hidden"></div>
-
-<!-- Final Message -->
-<div id="finalMessage" class="hidden">
-  <h2>Go to your sister</h2>
-</div>
-
-<script>
-  // Elements
-  const step1 = document.getElementById('step1');
-  const step2 = document.getElementById('step2');
-  const step3 = document.getElementById('step3');
-  const videoContainer = document.getElementById('videoContainer');
-  const finalMessage = document.getElementById('finalMessage');
-
-  const startBtn = document.getElementById('startBtn');
-
-  // Riddle 1
-  const riddle1Input = document.getElementById('riddle1Input');
-  const riddle1Btn = document.getElementById('riddle1Btn');
-  const riddle1Msg = document.getElementById('riddle1Msg');
-
-  // Clue 1
-  const puzzle1Input = document.getElementById('puzzle1Input');
-  const puzzle1Btn = document.getElementById('puzzle1Btn');
-  const puzzle1Msg = document.getElementById('puzzle1Msg');
-  const clue1Text = document.getElementById('clue1Text');
-
-  // Clue 2
-  const puzzle2Input = document.getElementById('puzzle2Input');
-  const puzzle2Btn = document.getElementById('puzzle2Btn');
-  const puzzle2Msg = document.getElementById('puzzle2Msg');
-  const clue2 = document.getElementById('clue2');
-  const clue2Text = document.getElementById('clue2Text');
-
-  // Clue 3
-  const puzzle3Input = document.getElementById('puzzle3Input');
-  const puzzle3Btn = document.getElementById('puzzle3Btn');
-  const puzzle3Msg = document.getElementById('puzzle3Msg');
-  const clue3 = document.getElementById('clue3');
-  const clue3Text = document.getElementById('clue3Text');
-
-  // Clue 4
-  const puzzle4Input = document.getElementById('puzzle4Input');
-  const puzzle4Btn = document.getElementById('puzzle4Btn');
-  const puzzle4Msg = document.getElementById('puzzle4Msg');
-  const clue4 = document.getElementById('clue4');
-  const clue4Text = document.getElementById('clue4Text');
-
-  // Password
-  const passwordBox = document.getElementById('passwordBox');
-  const passwordInput = document.getElementById('passwordInput');
-  const passwordBtn = document.getElementById('passwordBtn');
-  const passwordMsg = document.getElementById('passwordMsg');
-
-  // Start button click → show riddle 1
-  startBtn.onclick = () => {
-    step1.classList.add('hidden');
-    step2.classList.remove('hidden');
-  };
-
-  // Riddle 1 submit
-  riddle1Btn.onclick = () => {
-    const ans = riddle1Input.value.trim().toLowerCase();
-    if (ans === 'echo') {
-      riddle1Msg.style.color = 'green';
-      riddle1Msg.textContent = 'Correct! Moving on...';
-      setTimeout(() => {
-        step2.classList.add('hidden');
-        step3.classList.remove('hidden');
-        enablePuzzle1();
-      }, 1000);
-    } else {
-      riddle1Msg.style.color = 'red';
-      riddle1Msg.textContent = 'Nope, try again.';
+    function startRiddle() {
+      document.getElementById('main').style.display = 'none';
+      document.getElementById('riddle').style.display = 'block';
     }
-  };
 
-  // Enable puzzle 1 inputs
-  function enablePuzzle1() {
-    puzzle1Input.disabled = false;
-    puzzle1Btn.disabled = false;
-    clue2.classList.add('locked');
-    clue3.classList.add('locked');
-    clue4.classList.add('locked');
-  }
-
-  // Puzzle 1 check (5+3=8)
-  puzzle1Btn.onclick = () => {
-    if (puzzle1Input.value.trim() === '8') {
-      puzzle1Msg.style.color = 'green';
-      puzzle1Msg.textContent = 'Correct! Clue 1 unlocked.';
-      clue1Text.classList.remove('hidden');
-      unlockClue(2);
-    } else {
-      puzzle1Msg.style.color = 'red';
-      puzzle1Msg.textContent = 'Wrong, try again.';
+    function checkRiddle() {
+      const ans = document.getElementById('riddleAnswer').value.toLowerCase().trim();
+      if (ans === 'echo') {
+        document.getElementById('riddle').style.display = 'none';
+        document.getElementById('clues').style.display = 'block';
+      } else {
+        document.getElementById('riddleMsg').textContent = '❌ Try again!';
+      }
     }
-  };
 
-  // Unlock clue function
-  function unlockClue(num) {
-    if (num === 2) {
-      clue2.classList.remove('locked');
-      clue2.classList.add('unlocked');
-      puzzle2Input.disabled = false;
-      puzzle2Btn.disabled = false;
+    function solvePuzzle(num) {
+      if (num === 1) {
+        document.getElementById('clue1').textContent = '🧁 It’s sweet';
+        document.getElementById('puzzle2').style.display = 'block';
+      }
+      if (num === 2) {
+        document.getElementById('clue2').textContent = '🍓 Made with fruit';
+        document.getElementById('puzzle3').style.display = 'block';
+      }
+      if (num === 3) {
+        document.getElementById('clue3').textContent = '😋 You’ve tried it';
+        document.getElementById('puzzle4').style.display = 'block';
+      }
+      if (num === 4) {
+        document.getElementById('clue4').textContent = '🍌🍞';
+      }
     }
-    if (num === 3) {
-      clue3.classList.remove('locked');
-      clue3.classList.add('unlocked');
-      puzzle3Input.disabled = false;
-      puzzle3Btn.disabled = false;
+
+    function checkPassword() {
+      const pass = document.getElementById('finalInput').value.toLowerCase().replace(/\s/g, '');
+      if (pass === 'bananabread') {
+        document.getElementById('clues').style.display = 'none';
+        playVideoAndShowFinalClue();
+      } else {
+        document.getElementById('passMsg').textContent = '❌ Nope! Try again';
+      }
     }
-    if (num === 4) {
-      clue4.classList.remove('locked');
-      clue4.classList.add('unlocked');
-      puzzle4Input.disabled = false;
-      puzzle4Btn.disabled = false;
+
+    function playVideoAndShowFinalClue() {
+      const finalContainer = document.getElementById('final-container');
+      finalContainer.innerHTML = '<div id="player"></div>';
+
+      if (!window.YT) {
+        let tag = document.createElement('script');
+        tag.src = "https://www.youtube.com/iframe_api";
+        let firstScriptTag = document.getElementsByTagName('script')[0];
+        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+      }
+
+      window.onYouTubeIframeAPIReady = () => {
+        let player = new YT.Player('player', {
+          videoId: 'V8cP89V5UoM',
+          events: {
+            'onReady': event => {
+              event.target.playVideo();
+              let iframe = event.target.getIframe();
+              if (iframe.requestFullscreen) iframe.requestFullscreen();
+              else if (iframe.webkitRequestFullscreen) iframe.webkitRequestFullscreen();
+              else if (iframe.mozRequestFullScreen) iframe.mozRequestFullScreen();
+            },
+            'onStateChange': event => {
+              if (event.data === YT.PlayerState.ENDED) {
+                document.exitFullscreen?.();
+                finalContainer.innerHTML = '<h2>🗺 Final Clue: Go to your sister</h2>';
+              }
+            }
+          }
+        });
+      };
     }
-  }
-
-  // Puzzle 2 check (descending order of 1,2,3 = "3,2,1")
-  puzzle2Btn.onclick = () => {
-    const val = puzzle2Input.value.trim().replace(/\s/g, '');
-    if (val === '3,2,1') {
-      puzzle2Msg.style.color = 'green';
-      puzzle2Msg.textContent = 'Correct! Clue 2 unlocked.';
-      clue2Text.classList.remove('hidden');
-      unlockClue(3);
-    } else {
-      puzzle2Msg.style.color = 'red';
-      puzzle2Msg.textContent = 'Wrong, try again.';
-    }
-  };
-
-  // Puzzle 3 check (next in 2,4,6 is 8)
-  puzzle3Btn.onclick = () => {
-    if (puzzle3Input.value.trim() === '8') {
-      puzzle3Msg.style.color = 'green';
-      puzzle3Msg.textContent = 'Correct! Clue 3 unlocked.';
-      clue3Text.classList.remove('hidden');
-      unlockClue(4);
-    } else {
-      puzzle3Msg.style.color = 'red';
-      puzzle3Msg.textContent = 'Wrong, try again.';
-    }
-  };
-
-  // Puzzle 4 check (type "banana" backwards = "ananab")
-  puzzle4Btn.onclick = () => {
-    const val = puzzle4Input.value.trim().toLowerCase();
-    if (val === 'ananab') {
-      puzzle4Msg.style.color = 'green';
-      puzzle4Msg.textContent = 'Correct! Clue 4 unlocked.';
-      clue4Text.classList.remove('hidden');
-      enablePassword();
-    } else {
-      puzzle4Msg.style.color = 'red';
-      puzzle4Msg.textContent = 'Wrong, try again.';
-    }
-  };
-
-  // Enable password input
-  function enablePassword() {
-    passwordBox.style.display = 'block';
-  }
-
-  // Password check (flexible for spacing/caps)
-  passwordBtn.onclick = () => {
-    const val = passwordInput.value.trim().toLowerCase().replace(/\s/g, '');
-    if (val === 'bananabread') {
-      passwordMsg.style.color = 'green';
-      passwordMsg.textContent = 'Password correct! Playing video...';
-      playVideo();
-    } else {
-      passwordMsg.style.color = 'red';
-      passwordMsg.textContent = 'Wrong password, try again.';
-    }
-  };
-
-  // Play YT video fullscreen & autoplay
-  function playVideo() {
-    step3.classList.add('hidden');
-    videoContainer.classList.remove('hidden');
-    // YT embed with autoplay, controls off, fullscreen allowed
-    const ytURL = 'https://www.youtube.com/embed/V8cP89V5UoM?autoplay=1&controls=0&rel=0&modestbranding=1&fs=1';
-    videoContainer.innerHTML = `<iframe id="ytplayer" src="${ytURL}" allow="autoplay; fullscreen" allowfullscreen></iframe>`;
-
-    // After ~1:45 (105 sec), hide video & show final message
-    setTimeout(() => {
-      videoContainer.classList.add('hidden');
-      finalMessage.classList.remove('hidden');
-    }, 105000);
-  }
-</script>
-
+  </script>
 </body>
 </html>
