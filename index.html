@@ -131,9 +131,15 @@
         document.getElementById('riddle').style.display = 'none';
         document.getElementById('clues').style.display = 'block';
         // Show first puzzle only
-        document.getElementById('puzzle1').style.display = 'block';
+        showPuzzle(1);
       } else {
         document.getElementById('riddleMsg').textContent = '❌ Try again!';
+      }
+    }
+
+    function showPuzzle(num) {
+      for(let i=1; i<=4; i++) {
+        document.getElementById('puzzle' + i).style.display = (i === num) ? 'block' : 'none';
       }
     }
 
@@ -142,7 +148,7 @@
         const a = document.getElementById('ans1').value.trim().replace(/\s+/g, '');
         if (a === '5,3,1' || a === '531') {
           document.getElementById('clue1').textContent = '🧁 It’s sweet';
-          document.getElementById('puzzle2').style.display = 'block';
+          showPuzzle(2);
         } else {
           alert('Nope, try again!');
         }
@@ -151,7 +157,7 @@
         const a = document.getElementById('ans2').value.trim();
         if (a === '8') {
           document.getElementById('clue2').textContent = '🍓 Made with fruit';
-          document.getElementById('puzzle3').style.display = 'block';
+          showPuzzle(3);
         } else {
           alert('Nope, try again!');
         }
@@ -160,7 +166,7 @@
         const a = document.getElementById('ans3').value.toLowerCase().trim();
         if (a === 'car') {
           document.getElementById('clue3').textContent = '😋 You’ve tried it';
-          document.getElementById('puzzle4').style.display = 'block';
+          showPuzzle(4);
         } else {
           alert('Nope, try again!');
         }
@@ -208,12 +214,12 @@
               else if (iframe.webkitRequestFullscreen) iframe.webkitRequestFullscreen();
               else if (iframe.mozRequestFullScreen) iframe.mozRequestFullScreen();
 
-              // Stop video after 20 seconds
+              // Stop video after 18 seconds
               setTimeout(() => {
                 player.pauseVideo();
                 document.exitFullscreen?.();
                 finalContainer.innerHTML = '<h2>🗺 Final Clue: Go to your sister</h2>';
-              }, 20000);
+              }, 18000);
             }
           }
         });
