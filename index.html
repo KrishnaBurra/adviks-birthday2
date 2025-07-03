@@ -2,11 +2,11 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Advik's Birthday Hunt</title>
   <style>
     body {
-      font-family: 'Segoe UI', sans-serif;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       background: #fff8e1;
       margin: 0;
       padding: 2rem;
@@ -17,13 +17,16 @@
     }
     #main, #riddle, #clues, #final-container {
       display: none;
+      width: 100%;
+      max-width: 600px;
     }
     .puzzle {
-      margin: 1rem;
+      margin: 1rem 0;
       border: 2px solid #ffc107;
       padding: 1rem;
       border-radius: 10px;
       background: #fffde7;
+      box-shadow: 0 0 8px #ffd54faa;
     }
     button {
       padding: 10px 20px;
@@ -32,6 +35,11 @@
       border: none;
       border-radius: 8px;
       cursor: pointer;
+      margin-top: 10px;
+      transition: background-color 0.3s ease;
+    }
+    button:hover {
+      background-color: #ffca28;
     }
     input {
       padding: 10px;
@@ -39,6 +47,17 @@
       margin-top: 10px;
       border-radius: 5px;
       border: 1px solid #ccc;
+      width: 80%;
+      max-width: 300px;
+    }
+    p {
+      font-size: 18px;
+      margin: 0.5rem 0;
+    }
+    #final-container h2 {
+      margin-top: 2rem;
+      font-size: 24px;
+      color: #5d4037;
     }
   </style>
 </head>
@@ -51,48 +70,61 @@
   <div id="riddle">
     <h2>I speak without a mouth and hear without ears.<br>I have nobody, but I come alive with wind.<br>What am I?</h2>
     <input id="riddleAnswer" placeholder="Your answer..." />
+    <br />
     <button onclick="checkRiddle()">Submit</button>
-    <p id="riddleMsg"></p>
+    <p id="riddleMsg" style="color:red;"></p>
   </div>
 
   <div id="clues">
     <div class="puzzle" id="puzzle1">
-      <p>🔢 Tap to sort: 5, 1, 3 (descending)</p>
-      <button onclick="solvePuzzle(1)">1st Puzzle Done</button>
+      <p>🔢 Arrange in descending order: 5, 1, 3</p>
+      <input id="ans1" placeholder="Answer (like 5,3,1)" />
+      <br />
+      <button onclick="solvePuzzle(1)">Submit</button>
+      <p id="clue1" style="font-weight:bold; margin-top:10px;"></p>
     </div>
-    <p id="clue1"></p>
 
-    <div class="puzzle" id="puzzle2" style="display:none">
+    <div class="puzzle" id="puzzle2" style="display:none;">
       <p>🧩 What comes next: 2, 4, 6, ?</p>
-      <button onclick="solvePuzzle(2)">2nd Puzzle Done</button>
+      <input id="ans2" placeholder="Answer" />
+      <br />
+      <button onclick="solvePuzzle(2)">Submit</button>
+      <p id="clue2" style="font-weight:bold; margin-top:10px;"></p>
     </div>
-    <p id="clue2"></p>
 
-    <div class="puzzle" id="puzzle3" style="display:none">
+    <div class="puzzle" id="puzzle3" style="display:none;">
       <p>🧠 Which doesn’t belong? Apple, Banana, Car, Grape</p>
-      <button onclick="solvePuzzle(3)">3rd Puzzle Done</button>
+      <input id="ans3" placeholder="Answer" />
+      <br />
+      <button onclick="solvePuzzle(3)">Submit</button>
+      <p id="clue3" style="font-weight:bold; margin-top:10px;"></p>
     </div>
-    <p id="clue3"></p>
 
-    <div class="puzzle" id="puzzle4" style="display:none">
+    <div class="puzzle" id="puzzle4" style="display:none;">
       <p>🔁 Unscramble this: "ananab + daerb"</p>
-      <button onclick="solvePuzzle(4)">4th Puzzle Done</button>
+      <input id="ans4" placeholder="Answer" />
+      <br />
+      <button onclick="solvePuzzle(4)">Submit</button>
+      <p id="clue4" style="font-weight:bold; margin-top:10px;"></p>
     </div>
-    <p id="clue4"></p>
 
-    <input id="finalInput" placeholder="Enter password..." />
+    <input id="finalInput" placeholder="Enter password..." style="margin-top:20px; font-weight:bold;" />
+    <br />
     <button onclick="checkPassword()">Submit</button>
-    <p id="passMsg"></p>
+    <p id="passMsg" style="color:red; font-weight:bold;"></p>
   </div>
 
   <div id="final-container"></div>
 
   <script>
+    // Show first screen
     document.getElementById('main').style.display = 'block';
 
     function startRiddle() {
       document.getElementById('main').style.display = 'none';
       document.getElementById('riddle').style.display = 'block';
+      document.getElementById('riddleMsg').textContent = '';
+      document.getElementById('riddleAnswer').value = '';
     }
 
     function checkRiddle() {
@@ -100,31 +132,66 @@
       if (ans === 'echo') {
         document.getElementById('riddle').style.display = 'none';
         document.getElementById('clues').style.display = 'block';
+        clearClues();
       } else {
         document.getElementById('riddleMsg').textContent = '❌ Try again!';
       }
     }
 
+    function clearClues() {
+      // Reset clues and inputs
+      for (let i = 1; i <= 4; i++) {
+        const puzzle = document.getElementById('puzzle' + i);
+        if (i === 1) puzzle.style.display = 'block';
+        else puzzle.style.display = 'none';
+
+        document.getElementById('ans' + i).value = '';
+        document.getElementById('clue' + i).textContent = '';
+      }
+      document.getElementById('finalInput').value = '';
+      document.getElementById('passMsg').textContent = '';
+    }
+
     function solvePuzzle(num) {
       if (num === 1) {
-        document.getElementById('clue1').textContent = '🧁 It’s sweet';
-        document.getElementById('puzzle2').style.display = 'block';
+        const a = document.getElementById('ans1').value.trim().replace(/\s+/g, '');
+        if (a === '5,3,1' || a === '531') {
+          document.getElementById('clue1').textContent = '🧁 It’s sweet';
+          document.getElementById('puzzle2').style.display = 'block';
+        } else {
+          alert('Nope, try again!');
+        }
       }
       if (num === 2) {
-        document.getElementById('clue2').textContent = '🍓 Made with fruit';
-        document.getElementById('puzzle3').style.display = 'block';
+        const a = document.getElementById('ans2').value.trim();
+        if (a === '8') {
+          document.getElementById('clue2').textContent = '🍓 Made with fruit';
+          document.getElementById('puzzle3').style.display = 'block';
+        } else {
+          alert('Nope, try again!');
+        }
       }
       if (num === 3) {
-        document.getElementById('clue3').textContent = '😋 You’ve tried it';
-        document.getElementById('puzzle4').style.display = 'block';
+        const a = document.getElementById('ans3').value.toLowerCase().trim();
+        if (a === 'car') {
+          document.getElementById('clue3').textContent = '😋 You’ve tried it';
+          document.getElementById('puzzle4').style.display = 'block';
+        } else {
+          alert('Nope, try again!');
+        }
       }
       if (num === 4) {
-        document.getElementById('clue4').textContent = '🍌🍞';
+        const a = document.getElementById('ans4').value.toLowerCase().replace(/\s+/g, '');
+        if (a === 'bananabread') {
+          document.getElementById('clue4').textContent = '🍌🍞';
+        } else {
+          alert('Nope, try again!');
+        }
       }
     }
 
     function checkPassword() {
-      const pass = document.getElementById('finalInput').value.toLowerCase().replace(/\s/g, '');
+      const pass = document.getElementById('finalInput').value.toLowerCase().replace(/\s+/g, '');
       if (pass === 'bananabread') {
         document.getElementById('clues').style.display = 'none';
         playVideoAndShowFinalClue();
@@ -147,6 +214,7 @@
       window.onYouTubeIframeAPIReady = () => {
         let player = new YT.Player('player', {
           videoId: 'V8cP89V5UoM',
+          playerVars: { autoplay: 1, controls: 1, modestbranding: 1, rel: 0, fs: 1 },
           events: {
             'onReady': event => {
               event.target.playVideo();
@@ -158,6 +226,7 @@
             'onStateChange': event => {
               if (event.data === YT.PlayerState.ENDED) {
                 document.exitFullscreen?.();
+                player.stopVideo(); // Stop to prevent replay
                 finalContainer.innerHTML = '<h2>🗺 Final Clue: Go to your sister</h2>';
               }
             }
