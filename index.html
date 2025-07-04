@@ -94,12 +94,12 @@
     <div class="clue-box" id="clue3">Clue 3: You've tried it! 😋</div>
 
     <div class="puzzle-box" id="puzzle4">
-      <p>Tap numbers in descending order: 5, 9, 3, 7</p>
-      <div class="number-btns">
-        <button onclick="tapNumber(9)">9</button>
-        <button onclick="tapNumber(7)">7</button>
-        <button onclick="tapNumber(5)">5</button>
-        <button onclick="tapNumber(3)">3</button>
+      <p>Match the emoji pairs:</p>
+      <div>
+        <button onclick="matchEmoji('🍕')">🍕</button>
+        <button onclick="matchEmoji('🍌')">🍌</button>
+        <button onclick="matchEmoji('🍕')">🍕</button>
+        <button onclick="matchEmoji('🍌')">🍌</button>
       </div>
     </div>
     <div class="clue-box" id="clue4">Clue 4: 🍌🍞</div>
@@ -118,8 +118,7 @@
     let userOrder = [];
     const patternOrder = [1, 3, 2];
     let tappedPattern = [];
-    let tappedNums = [];
-    const correctNums = [9, 7, 5, 3];
+    let matched = [];
 
     function next(id) {
       document.querySelectorAll('.section').forEach(el => el.style.display = 'none');
@@ -159,10 +158,10 @@
       }
     }
 
-    function tapNumber(n) {
-      tappedNums.push(n);
-      if (tappedNums.length === 4) {
-        if (JSON.stringify(tappedNums) === JSON.stringify(correctNums)) {
+    function matchEmoji(emoji) {
+      matched.push(emoji);
+      if (matched.length === 4) {
+        if (matched.filter(e => e === '🍌').length === 2 && matched.filter(e => e === '🍕').length === 2) {
           document.getElementById('clue4').style.display = 'block';
         }
       }
