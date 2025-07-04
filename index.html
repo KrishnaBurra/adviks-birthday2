@@ -1,185 +1,160 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Birthday Puzzle</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Advik's Birthday Puzzle</title>
   <style>
     body {
-      background: linear-gradient(to right, #ffecd2, #fcb69f);
       font-family: 'Comic Sans MS', sans-serif;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      flex-direction: column;
-      height: 100vh;
-      margin: 0;
-      padding: 20px;
+      background: linear-gradient(to right, #f6d365, #fda085);
+      text-align: center;
+      padding: 40px;
       color: #333;
     }
-    .section { display: none; text-align: center; }
-    button {
-      margin: 10px;
-      padding: 10px 20px;
-      background-color: #ff9f1c;
-      border: none;
+    button, input {
+      margin: 5px;
+      padding: 10px 15px;
       border-radius: 10px;
+      border: none;
+      background-color: orange;
+      color: white;
       font-size: 16px;
       cursor: pointer;
     }
-    input {
-      padding: 10px;
-      font-size: 16px;
-      border-radius: 8px;
-      border: 1px solid #ccc;
-    }
-    .clue-box {
-      border: 2px dashed #555;
-      padding: 10px;
+    .clue {
       margin: 10px auto;
-      width: 250px;
-      background-color: #fff4e6;
+      padding: 10px;
+      border: 2px dashed #555;
+      width: fit-content;
+      background: #fff8dc;
       display: none;
     }
-    .puzzle-box {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
+    .puzzle {
+      margin: 20px 0;
     }
-    .number-btns button {
-      margin: 5px;
-      padding: 10px 15px;
-      font-size: 16px;
+    #videoContainer {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: black;
+      z-index: 999;
+    }
+    #finalMessage {
+      display: none;
+      color: white;
+      font-size: 32px;
+      margin-top: 20px;
     }
   </style>
 </head>
 <body>
-  <div class="section" id="start" style="display:block">
-    <h2>🎉 Congrats on finding the hint!</h2>
-    <button onclick="next('riddle')">Press to Continue</button>
-  </div>
+  <h1>🎉 Congrats on Finding the Hint!</h1>
+  <button onclick="startGame()">Press to Continue</button>
 
-  <div class="section" id="riddle">
-    <p>I speak without a mouth and hear without ears.<br />I have nobody, but I come alive with wind.<br /><strong>What am I?</strong></p>
-    <input id="riddleAnswer" placeholder="Your answer..." />
-    <button onclick="checkRiddle()">Submit</button>
-  </div>
+  <div id="game" style="display:none">
 
-  <div class="section" id="clues">
-    <div class="puzzle-box" id="puzzle1">
+    <!-- Puzzle 1 -->
+    <div class="puzzle" id="puzzle1">
       <p>Tap in rainbow order: Red, Orange, Yellow</p>
-      <div>
-        <button onclick="tapColor('red')">Red</button>
-        <button onclick="tapColor('yellow')">Yellow</button>
-        <button onclick="tapColor('orange')">Orange</button>
-      </div>
+      <button onclick="colorTap('Red')">Red</button>
+      <button onclick="colorTap('Orange')">Orange</button>
+      <button onclick="colorTap('Yellow')">Yellow</button>
     </div>
-    <div class="clue-box" id="clue1">Clue 1: It's sweet 🍬</div>
+    <div class="clue" id="clue1">Clue 1: It's sweet 🍭</div>
 
-    <div class="puzzle-box" id="puzzle2">
+    <!-- Puzzle 2 -->
+    <div class="puzzle" id="puzzle2" style="display:none">
       <p>What is 5 + 3?</p>
-      <input id="mathAnswer" type="number" />
+      <input id="mathAnswer" type="text">
       <button onclick="checkMath()">Submit</button>
     </div>
-    <div class="clue-box" id="clue2">Clue 2: Made with fruit 🍌</div>
+    <div class="clue" id="clue2">Clue 2: Made with fruit 🍌</div>
 
-    <div class="puzzle-box" id="puzzle3">
-      <p>Tap the boxes in this order: 🟥 🟩 🟦</p>
-      <div>
-        <button onclick="tapPattern(1)">🟥</button>
-        <button onclick="tapPattern(2)">🟦</button>
-        <button onclick="tapPattern(3)">🟩</button>
-      </div>
+    <!-- Puzzle 3 -->
+    <div class="puzzle" id="puzzle3" style="display:none">
+      <p>Tap the boxes in this order: 🟪 🟦 🟧 🟩</p>
+      <button onclick="tapBox('🟪')">🟪</button>
+      <button onclick="tapBox('🟧')">🟧</button>
+      <button onclick="tapBox('🟩')">🟩</button>
+      <button onclick="tapBox('🟦')">🟦</button>
     </div>
-    <div class="clue-box" id="clue3">Clue 3: You've tried it! 😋</div>
+    <div class="clue" id="clue3">Clue 3: You've tried it before</div>
 
-    <div class="puzzle-box" id="puzzle4">
-      <p>Match the emoji pairs:</p>
-      <div>
-        <button onclick="matchEmoji('🍕')">🍕</button>
-        <button onclick="matchEmoji('🍌')">🍌</button>
-        <button onclick="matchEmoji('🍕')">🍕</button>
-        <button onclick="matchEmoji('🍌')">🍌</button>
-      </div>
+    <!-- Puzzle 4 -->
+    <div class="puzzle" id="puzzle4" style="display:none">
+      <p>Match the emoji pairs 🍌 and 🍕</p>
+      <button onclick="matchPair(0)">🍌</button>
+      <button onclick="matchPair(1)">🍕</button>
+      <button onclick="matchPair(2)">🍕</button>
+      <button onclick="matchPair(3)">🍌</button>
     </div>
-    <div class="clue-box" id="clue4">Clue 4: 🍌🍞</div>
+    <div class="clue" id="clue4">Clue 4: 🍌 + 🍞</div>
 
-    <input id="password" placeholder="Enter password..." />
-    <button onclick="checkPassword()">Submit</button>
+    <!-- Password entry -->
+    <div id="passwordBox" style="display:none">
+      <input id="password" placeholder="Enter password...">
+      <button onclick="checkPassword()">Submit</button>
+    </div>
+
   </div>
 
-  <div class="section" id="video">
-    <iframe id="yt" width="0" height="0" src="https://www.youtube.com/embed/V8cP89V5UoM?autoplay=1&mute=1" frameborder="0" allow="autoplay; fullscreen" allowfullscreen></iframe>
-    <p id="finalHint" style="display:none; font-size: 20px; margin-top: 20px;"><strong>Go to your sister.</strong></p>
+  <!-- Video -->
+  <div id="videoContainer">
+    <iframe id="videoFrame" width="100%" height="100%" src="https://www.youtube.com/embed/V8cP89V5UoM?autoplay=1&mute=1" frameborder="0" allow="autoplay"></iframe>
+    <div id="finalMessage">Go to your sister</div>
   </div>
 
-  <script>
-    const correctOrder = ['red', 'orange', 'yellow'];
-    let userOrder = [];
-    const patternOrder = [1, 3, 2];
-    let tappedPattern = [];
-    let matched = [];
+<script>
+let colorSequence = [];
+function startGame() {
+  document.querySelector('button').style.display = 'none';
+  document.getElementById('game').style.display = 'block';
+}
+function colorTap(color) {
+  colorSequence.push(color);
+  if (colorSequence.join(',') === 'Red,Orange,Yellow') {
+    document.getElementById('clue1').style.display = 'block';
+    document.getElementById('puzzle2').style.display = 'block';
+  }
+}
+function checkMath() {
+  const ans = document.getElementById('mathAnswer').value.trim();
+  if (ans == '8') {
+    document.getElementById('clue2').style.display = 'block';
+    document.getElementById('puzzle3').style.display = 'block';
+  }
+}
+let boxSequence = [];
+function tapBox(emoji) {
+  boxSequence.push(emoji);
+  if (boxSequence.join(',') === '🟪,🟦,🟧,🟩') {
+    document.getElementById('clue3').style.display = 'block';
+    document.getElementById('puzzle4').style.display = 'block';
+  }
+}
+let matches = [];
+function matchPair(index) {
+  matches.push(index);
+  if (matches.includes(0) && matches.includes(3) && matches.includes(1) && matches.includes(2)) {
+    document.getElementById('clue4').style.display = 'block';
+    document.getElementById('passwordBox').style.display = 'block';
+  }
+}
+function checkPassword() {
+  const input = document.getElementById('password').value.toLowerCase().replace(/\s+/g, '');
+  if (input === 'bananabread') {
+    document.getElementById('game').style.display = 'none';
+    document.getElementById('videoContainer').style.display = 'block';
+    setTimeout(() => {
+      document.getElementById('videoFrame').style.display = 'none';
+      document.getElementById('finalMessage').style.display = 'block';
+    }, 18000); // 18 seconds
+  }
+}
+</script>
 
-    function next(id) {
-      document.querySelectorAll('.section').forEach(el => el.style.display = 'none');
-      document.getElementById(id).style.display = 'block';
-    }
-
-    function checkRiddle() {
-      const ans = document.getElementById('riddleAnswer').value.trim().toLowerCase();
-      if (ans === 'echo') next('clues');
-    }
-
-    function tapColor(color) {
-      userOrder.push(color);
-      if (userOrder.length === 3) {
-        if (JSON.stringify(userOrder) === JSON.stringify(correctOrder)) {
-          document.getElementById('clue1').style.display = 'block';
-          document.getElementById('puzzle2').style.display = 'flex';
-        }
-      }
-    }
-
-    function checkMath() {
-      const val = parseInt(document.getElementById('mathAnswer').value);
-      if (val === 8) {
-        document.getElementById('clue2').style.display = 'block';
-        document.getElementById('puzzle3').style.display = 'flex';
-      }
-    }
-
-    function tapPattern(val) {
-      tappedPattern.push(val);
-      if (tappedPattern.length === 3) {
-        if (JSON.stringify(tappedPattern) === JSON.stringify(patternOrder)) {
-          document.getElementById('clue3').style.display = 'block';
-          document.getElementById('puzzle4').style.display = 'flex';
-        }
-      }
-    }
-
-    function matchEmoji(emoji) {
-      matched.push(emoji);
-      if (matched.length === 4) {
-        if (matched.filter(e => e === '🍌').length === 2 && matched.filter(e => e === '🍕').length === 2) {
-          document.getElementById('clue4').style.display = 'block';
-        }
-      }
-    }
-
-    function checkPassword() {
-      const input = document.getElementById('password').value.trim().toLowerCase().replace(/\s/g, '');
-      if (input === 'bananabread') {
-        next('video');
-        const iframe = document.getElementById('yt');
-        iframe.width = window.innerWidth;
-        iframe.height = window.innerHeight;
-        setTimeout(() => {
-          iframe.style.display = 'none';
-          document.getElementById('finalHint').style.display = 'block';
-        }, 18000);
-      }
-    }
-  </script>
 </body>
 </html>
